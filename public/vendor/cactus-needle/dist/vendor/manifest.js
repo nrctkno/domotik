@@ -1,0 +1,37 @@
+
+//#region vendor/manifest.json
+var repository = "Cactus-Compute/needle3";
+var revision = "2ae11323dc000f5e70c49f7403efa6af12ba9e67";
+var files = {
+	"needle.cjs": {
+		"path": "wasm/needle.js",
+		"size": 63072,
+		"sha256": "964681b2a5ec3c4db2f06e45a5b60c8981a7d4ab4cac16ef6bf5b1988657a5f1"
+	},
+	"needle.wasm": {
+		"path": "wasm/needle.wasm",
+		"size": 923348,
+		"sha256": "c43f48e11f302087250d1e406024956781cd2f02595a5e343b3d7ddd5ef707fa"
+	},
+	"LICENSE": {
+		"path": "LICENSE",
+		"size": 11358,
+		"sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+	}
+};
+var speechModel = {
+	"repository": "Cactus-Compute/whistle",
+	"revision": "b358ddadd89b7a713b5aa131f23032d3cca1b251",
+	"path": "whistle.cact",
+	"size": 16919407,
+	"sha256": "b6e02f048568ac5d01a2042556c658061e699acbc0aa2a1439f52f3d461dffeb"
+};
+var model = {
+	"path": "needle3.cact",
+	"size": 35335380,
+	"sha256": "c9d915eca282ed42d1a09b143b592adb4cc6744ffe2d294adf5cfc5548170c38"
+};
+//#endregion
+export { files, model, repository, revision, speechModel };
+
+//# sourceMappingURL=manifest.js.map

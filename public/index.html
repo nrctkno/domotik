@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08130f" />
+    <meta
+      name="description"
+      content="Sandbox local de reconocimiento de voz con Whistle"
+    />
+    <link rel="stylesheet" href="./src/style.css" />
+    <title>Whistle Web Sandbox</title>
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <main class="shell">
+      <section class="recorder-card" aria-label="Grabador de voz">
+        <div class="record-control">
+          <div class="record-rings" aria-hidden="true"></div>
+          <button
+            id="recordButton"
+            class="record-button"
+            type="button"
+            aria-label="Mantener presionado para grabar"
+            aria-pressed="false"
+            disabled
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.25a3.75 3.75 0 0 0 3.75-3.75V6a3.75 3.75 0 0 0-7.5 0v5.5A3.75 3.75 0 0 0 12 15.25Z" />
+              <path d="M5.75 10.75v.75a6.25 6.25 0 0 0 12.5 0v-.75M12 17.75V21M9 21h6" />
+            </svg>
+          </button>
+        </div>
+
+        <p class="hold-label">Mantené presionado para hablar</p>
+        <div id="statusBadge" class="status-badge loading">
+          <span class="status-dot"></span>
+          <span id="statusText" aria-live="polite">Cargando Whistle</span>
+        </div>
+
+        <div id="progressTrack" class="progress-track" aria-hidden="true">
+          <span id="progressBar"></span>
+        </div>
+      </section>
+
+      <section class="transcript-card" aria-labelledby="transcript-title">
+        <div class="transcript-heading">
+          <div>
+            <span class="section-index">01</span>
+            <h2 id="transcript-title">Transcripción</h2>
+          </div>
+          <button id="copyButton" class="copy-button" type="button" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="8" y="8" width="11" height="11" rx="2" />
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+            </svg>
+            Copiar
+          </button>
+        </div>
+        <div id="transcript" class="transcript empty" aria-live="polite">
+          Tu transcripción aparecerá acá.
+        </div>
+        <div id="metrics" class="metrics" hidden>
+          <span><strong id="languageMetric">—</strong> idioma</span>
+          <span><strong id="latencyMetric">—</strong> primer token</span>
+          <span><strong id="speedMetric">—</strong> tokens/s</span>
+        </div>
+      </section>
+
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
