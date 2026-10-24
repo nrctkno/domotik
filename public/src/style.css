@@ -25,15 +25,16 @@ button {
 
 .shell {
   display: grid;
-  min-height: 100vh;
+  height: 100vh;
   padding: 16px;
-  place-items: center;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .voice-panel {
   display: flex;
   width: 100%;
-  min-height: calc(100vh - 32px);
+  min-height: 0;
   padding: 48px 24px;
   align-items: center;
   justify-content: center;
@@ -142,6 +143,136 @@ body[data-state="error"] .status {
   color: #ffb2a9;
 }
 
+.test-panel {
+  width: 100%;
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+  border: 2px solid var(--line);
+  border-radius: 24px;
+  background: #0d281f;
+}
+
+.test-header h2,
+.test-module h3,
+.module-status {
+  margin: 0;
+}
+
+.test-header h2 {
+  font-size: 20px;
+}
+
+.module-status,
+.empty-state {
+  color: #70877d;
+}
+
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.test-module {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #0a1f18;
+}
+
+.test-module h3 {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.lights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.light-toggle,
+.module-action,
+.note-remove {
+  border: 1px solid var(--line);
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.light-toggle {
+  display: flex;
+  padding: 9px 10px;
+  align-items: center;
+  gap: 9px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.light-toggle span {
+  font-size: 14px;
+}
+
+.timer-display {
+  display: block;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.module-status {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.module-action {
+  margin-top: 16px;
+  padding: 7px 11px;
+  border-radius: 7px;
+}
+
+.module-action:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.notes-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.note-item {
+  display: flex;
+  padding-bottom: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.note-id {
+  margin-right: 6px;
+  color: #70877d;
+}
+
+.note-remove {
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+
+.empty-state {
+  font-size: 14px;
+}
+
 @keyframes pulse-ring {
   70%,
   100% {
@@ -156,9 +287,16 @@ body[data-state="error"] .status {
   }
 
   .voice-panel {
-    min-height: calc(100vh - 20px);
     padding: 32px 20px;
     border-radius: 30px;
+  }
+
+  .test-panel {
+    padding: 18px;
+  }
+
+  .test-grid {
+    grid-template-columns: 1fr;
   }
 }
 

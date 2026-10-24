@@ -34,7 +34,49 @@
         <p id="transcript" class="transcript" aria-live="polite">
           Mantené presionado para hablar
         </p>
-        <p id="statusText" class="status" aria-live="polite">Cargando modelo</p>
+        <p id="statusText" class="status" aria-live="polite">Iniciando...</p>
+      </section>
+
+      <section class="test-panel" aria-labelledby="test-panel-title">
+        <header class="test-header">
+          <h2 id="test-panel-title">Banco de pruebas</h2>
+        </header>
+
+        <div class="test-grid">
+          <article class="test-module">
+            <h3>Luces</h3>
+            <div class="lights" aria-label="Estado de las luces">
+              <button class="light-toggle" type="button" data-room="living" aria-pressed="false">
+                <span data-light-icon aria-hidden="true">⚫</span>
+                Living
+              </button>
+              <button class="light-toggle" type="button" data-room="cocina" aria-pressed="false">
+                <span data-light-icon aria-hidden="true">⚫</span>
+                Cocina
+              </button>
+              <button class="light-toggle" type="button" data-room="jardin" aria-pressed="false">
+                <span data-light-icon aria-hidden="true">⚫</span>
+                Jardín
+              </button>
+            </div>
+          </article>
+
+          <article class="test-module">
+            <h3>Temporizador</h3>
+            <output id="timerDisplay" class="timer-display" aria-live="polite">00:00</output>
+            <p id="timerStatus" class="module-status">Apagado</p>
+            <button id="cancelTimerButton" class="module-action" type="button" disabled>
+              Cancelar
+            </button>
+          </article>
+
+          <article class="test-module">
+            <h3>Notas</h3>
+            <ul id="notesList" class="notes-list">
+              <li id="notesEmpty" class="empty-state">Sin notas</li>
+            </ul>
+          </article>
+        </div>
       </section>
     </main>
 
