@@ -5,8 +5,6 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --mint: #8ef0b5;
-  --mint-bright: #b7ffd0;
-  --surface: rgba(15, 31, 25, 0.72);
   --line: rgba(169, 239, 197, 0.13);
   --muted: #89a399;
 }
@@ -20,9 +18,7 @@ body {
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 50% 32%, rgba(44, 151, 98, 0.09), transparent 34%),
-    linear-gradient(180deg, #091510 0%, #07100d 72%);
+  background: #091510;
 }
 
 button,
@@ -92,9 +88,7 @@ a {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 24px;
-  background:
-    linear-gradient(145deg, rgba(25, 48, 39, 0.54), rgba(10, 22, 17, 0.8)),
-    var(--surface);
+  background: #10231b;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(16px);
 }
@@ -159,7 +153,7 @@ a {
   border: 1px solid rgba(191, 255, 215, 0.52);
   border-radius: 50%;
   color: #0b2718;
-  background: linear-gradient(145deg, #baffd1, #76dda0);
+  background: #8ef0b5;
   box-shadow:
     0 0 0 8px rgba(142, 240, 181, 0.06),
     0 18px 34px rgba(0, 0, 0, 0.32),
@@ -194,7 +188,7 @@ a {
 
 body[data-state="recording"] .record-button {
   transform: scale(0.92);
-  background: linear-gradient(145deg, #ffad9d, #ff7567);
+  background: #ff8f80;
   box-shadow: 0 0 0 14px rgba(255, 119, 103, 0.08), 0 0 46px rgba(255, 119, 103, 0.2);
 }
 

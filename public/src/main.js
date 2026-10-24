@@ -57,14 +57,14 @@ async function loadModel() {
         const rounded = Math.round(percentage);
         progressTrack.classList.add("visible");
         progressBar.style.width = `${rounded}%`;
-        setState("loading", `Cargando Whistle · ${rounded}%`);
+        setState("loading", `Cargando modelo · ${rounded}%`);
       },
     });
     progressBar.style.width = "100%";
     window.setTimeout(() => progressTrack.classList.remove("visible"), 450);
     setState("ready", "Listo para escuchar");
   } catch (error) {
-    fail(error, "No se pudo cargar Whistle");
+    fail(error, "No se pudo cargar el modelo");
   }
 }
 
@@ -125,7 +125,7 @@ function endRecording(source) {
 
 async function processRecording() {
   try {
-    if (!whistle || !audioContext) throw new Error("Whistle todavía no está listo");
+    if (!whistle || !audioContext) throw new Error("El modelo todavía no está listo");
     const blob = new Blob(audioChunks, { type: mediaRecorder?.mimeType || "audio/webm" });
     releaseStream();
     mediaRecorder = null;
@@ -140,7 +140,7 @@ async function processRecording() {
 
     const result = await whistle.transcribe(
       { samples, sampleRate: decodedAudio.sampleRate },
-      { language: "es" },
+      //{ language: "auto" },
     );
 
     renderResult(result);
