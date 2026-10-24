@@ -5,16 +5,8 @@ const MAX_RECORDING_MS = 30_000;
 const modelUrl = new URL("../models/whistle.cact", import.meta.url).href;
 
 const recordButton = query("#recordButton");
-const statusBadge = query("#statusBadge");
 const statusText = query("#statusText");
 const transcript = query("#transcript");
-const copyButton = query("#copyButton");
-const metrics = query("#metrics");
-const languageMetric = query("#languageMetric");
-const latencyMetric = query("#latencyMetric");
-const speedMetric = query("#speedMetric");
-const progressTrack = query("#progressTrack");
-const progressBar = query("#progressBar");
 
 let state = "loading";
 let whistle = null;
@@ -34,7 +26,6 @@ function query(selector) {
 
 function setState(nextState, message) {
   state = nextState;
-  statusBadge.className = `status-badge ${nextState}`;
   statusText.textContent = message;
   recordButton.disabled = ["loading", "transcribing", "error"].includes(nextState);
   recordButton.setAttribute("aria-pressed", String(nextState === "recording"));
@@ -52,16 +43,7 @@ async function loadModel() {
       model: modelUrl,
       modelSha256: MODEL_SHA256,
       cache: true,
-      onDownloadProgress({ percentage }) {
-        if (percentage === undefined) return;
-        const rounded = Math.round(percentage);
-        progressTrack.classList.add("visible");
-        progressBar.style.width = `${rounded}%`;
-        setState("loading", `Cargando modelo · ${rounded}%`);
-      },
     });
-    progressBar.style.width = "100%";
-    window.setTimeout(() => progressTrack.classList.remove("visible"), 450);
     setState("ready", "Listo para escuchar");
   } catch (error) {
     fail(error, "No se pudo cargar el modelo");
@@ -138,13 +120,14 @@ async function processRecording() {
       throw new Error("La grabación fue demasiado corta");
     }
 
-    const result = await whistle.transcribe(
-      { samples, sampleRate: decodedAudio.sampleRate },
-      //{ language: "auto" },
-    );
+    const result = await whistle.transcribe({
+      samples,
+      sampleRate: decodedAudio.sampleRate,
+      //{ language: "es" }, // do not remove this line, keeping it as reference
+    });
 
     renderResult(result);
-    setState("ready", result.text ? "Transcripción completa" : "No se detectó voz");
+    setState("ready", "Listo para escuchar");
   } catch (error) {
     fail(error, "No se pudo transcribir el audio");
   } finally {
@@ -166,13 +149,7 @@ function downmix(buffer) {
 }
 
 function renderResult(result) {
-  transcript.textContent = result.text || "No se detectó voz en la grabación.";
-  transcript.classList.toggle("empty", !result.text);
-  copyButton.disabled = !result.text;
-  metrics.hidden = false;
-  languageMetric.textContent = result.language || "—";
-  latencyMetric.textContent = `${Math.round(result.timeToFirstTokenMs)} ms`;
-  speedMetric.textContent = Math.round(result.tokensPerSecond).toString();
+  transcript.textContent = result.text || "No se detectó voz. Intentá nuevamente.";
 }
 
 function releaseStream() {
@@ -222,19 +199,6 @@ window.addEventListener("keyup", (event) => {
 window.addEventListener("blur", () => endRecording());
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) endRecording();
-});
-
-copyButton.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(transcript.textContent || "");
-    const original = copyButton.innerHTML;
-    copyButton.textContent = "Copiado";
-    window.setTimeout(() => {
-      copyButton.innerHTML = original;
-    }, 1200);
-  } catch (error) {
-    fail(error, "No se pudo copiar la transcripción");
-  }
 });
 
 window.addEventListener("beforeunload", () => {
