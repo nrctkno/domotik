@@ -3,6 +3,7 @@ import { createNeedle, createWhistle, tool } from "../vendor/cactus-needle/dist/
 const WHISTLE_SHA256 = "b6e02f048568ac5d01a2042556c658061e699acbc0aa2a1439f52f3d461dffeb";
 const NEEDLE_SHA256 = "c9d915eca282ed42d1a09b143b592adb4cc6744ffe2d294adf5cfc5548170c38";
 const MAX_RECORDING_MS = 30_000;
+const SUPPORTED_SPEECH_LANGUAGES = new Set(["en", "de", "fr", "es", "it", "nl", "pl"]);
 const whistleModelUrl = new URL("../models/whistle.cact", import.meta.url).href;
 const needleModelUrl = new URL("../models/needle3.cact", import.meta.url).href;
 
@@ -38,6 +39,7 @@ let audioChunks = [];
 let activeInput = null;
 let pressSequence = 0;
 let currentCommandInput = "";
+let currentTranscriptionLanguages = { passed: "auto", detected: "—" };
 
 const commandTools = {
   set_light: tool({
@@ -91,7 +93,7 @@ const commandTools = {
   }),
   add_note: tool({
     description: "Agrega una nota breve a la lista.",
-    triggers: ["anota", "agrega una nota", "recuerda", "apunta"],
+    triggers: ["anota", "agrega una nota", "recuerda", "apunta", "recordame"],
     inputSchema: {
       type: "object",
       properties: {
@@ -248,10 +250,19 @@ async function processRecording() {
     const decodedAudio = await audioContext.decodeAudioData(encodedAudio);
     if (decodedAudio.duration < 0.15) throw new Error("La grabación fue demasiado corta");
 
-    const result = await whistle.transcribe({
-      samples: downmix(decodedAudio),
-      sampleRate: decodedAudio.sampleRate,
-    });
+    const systemLanguage = navigator.language.split("-")[0].toLowerCase();
+    const passedLanguage = SUPPORTED_SPEECH_LANGUAGES.has(systemLanguage) ? systemLanguage : "auto";
+    const result = await whistle.transcribe(
+      {
+        samples: downmix(decodedAudio),
+        sampleRate: decodedAudio.sampleRate,
+      },
+      passedLanguage === "auto" ? {} : { language: passedLanguage },
+    );
+    currentTranscriptionLanguages = {
+      passed: passedLanguage,
+      detected: result.language || "—",
+    };
     const text = result.text.trim();
     transcript.textContent = text || "No se detectó voz. Intentá nuevamente.";
 
@@ -273,6 +284,7 @@ async function processRecording() {
     ).length;
 
     if (successfulActions === 0) {
+      appendUnrecognizedInput(text);
       setState("ready", "No se reconoció ningún comando");
     } else {
       const label = successfulActions === 1 ? "comando ejecutado" : "comandos ejecutados";
@@ -411,7 +423,20 @@ function renderNotes() {
 function appendCommandLog(name, args) {
   const input = currentCommandInput.replace(/\s+/g, " ").trim();
   const entry = JSON.stringify({ name, arguments: args });
-  const line = input ? `${input} -> ${entry}` : entry;
+  const line = input ? `${formatLanguageLog()} ${input} -> ${entry}` : entry;
+  appendLogLine(line);
+}
+
+function appendUnrecognizedInput(input) {
+  const normalizedInput = input.replace(/\s+/g, " ").trim();
+  appendLogLine(`${formatLanguageLog()} ${normalizedInput} -> Sin comando reconocido`);
+}
+
+function formatLanguageLog() {
+  return `[${currentTranscriptionLanguages.passed} -> ${currentTranscriptionLanguages.detected}]`;
+}
+
+function appendLogLine(line) {
   commandLog.value = commandLog.value ? `${commandLog.value}\n${line}` : line;
   commandLog.scrollTop = commandLog.scrollHeight;
 }
