@@ -15,6 +15,7 @@ const timerStatus = query("#timerStatus");
 const cancelTimerButton = query("#cancelTimerButton");
 const notesList = query("#notesList");
 const notesEmpty = query("#notesEmpty");
+const commandLog = query("#commandLog");
 
 const lights = {
   living: false,
@@ -36,6 +37,7 @@ let recordingTimeout = 0;
 let audioChunks = [];
 let activeInput = null;
 let pressSequence = 0;
+let currentCommandInput = "";
 
 const commandTools = {
   set_light: tool({
@@ -51,7 +53,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute({ room, on }) {
-      return setLight(room, on);
+      const result = setLight(room, on);
+      appendCommandLog("set_light", { room, on });
+      return result;
     },
   }),
   set_timer: tool({
@@ -66,7 +70,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute({ seconds }) {
-      return startTimer(seconds);
+      const result = startTimer(seconds);
+      appendCommandLog("set_timer", { seconds });
+      return result;
     },
   }),
   cancel_timer: tool({
@@ -78,7 +84,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute() {
-      return cancelTimer();
+      const result = cancelTimer();
+      appendCommandLog("cancel_timer", {});
+      return result;
     },
   }),
   add_note: tool({
@@ -93,7 +101,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute({ text }) {
-      return addNote(text);
+      const result = addNote(text);
+      appendCommandLog("add_note", { text });
+      return result;
     },
   }),
   remove_note: tool({
@@ -108,7 +118,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute({ id }) {
-      return removeNote(id);
+      const result = removeNote(id);
+      appendCommandLog("remove_note", { id });
+      return result;
     },
   }),
   clear_notes: tool({
@@ -120,7 +132,9 @@ const commandTools = {
       additionalProperties: false,
     },
     execute() {
-      return clearNotes();
+      const result = clearNotes();
+      appendCommandLog("clear_notes", {});
+      return result;
     },
   }),
 };
@@ -247,7 +261,13 @@ async function processRecording() {
     }
 
     setState("transcribing", "Interpretando comando");
-    const commandResult = await needle.run(text, { maxSteps: 4 });
+    currentCommandInput = text;
+    let commandResult;
+    try {
+      commandResult = await needle.run(text, { maxSteps: 4 });
+    } finally {
+      currentCommandInput = "";
+    }
     const successfulActions = commandResult.results.filter(
       (item) => !item || typeof item !== "object" || !("error" in item),
     ).length;
@@ -386,6 +406,14 @@ function renderNotes() {
     item.append(text, removeButton);
     notesList.append(item);
   }
+}
+
+function appendCommandLog(name, args) {
+  const input = currentCommandInput.replace(/\s+/g, " ").trim();
+  const entry = JSON.stringify({ name, arguments: args });
+  const line = input ? `${input} -> ${entry}` : entry;
+  commandLog.value = commandLog.value ? `${commandLog.value}\n${line}` : line;
+  commandLog.scrollTop = commandLog.scrollHeight;
 }
 
 function releaseStream() {

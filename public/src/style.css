@@ -27,7 +27,7 @@ button {
   display: grid;
   height: 100vh;
   padding: 16px;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 2fr) minmax(0, 3fr);
   gap: 16px;
 }
 
@@ -48,9 +48,10 @@ button {
 .record-control {
   display: grid;
   position: relative;
-  width: 144px;
-  height: 144px;
+  width: clamp(120px, 16vh, 144px);
+  height: clamp(120px, 16vh, 144px);
   margin-bottom: 28px;
+  flex: none;
   place-items: center;
 }
 
@@ -271,6 +272,32 @@ body[data-state="error"] .status {
 
 .empty-state {
   font-size: 14px;
+}
+
+.command-log-label {
+  display: block;
+  margin-top: 16px;
+  color: #70877d;
+  font-size: 12px;
+}
+
+.command-log {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 10px;
+  resize: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #9eb4ab;
+  background: #081a14;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.command-log::placeholder {
+  color: #50675d;
 }
 
 @keyframes pulse-ring {
