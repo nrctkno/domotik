@@ -274,13 +274,6 @@ body[data-state="error"] .status {
   font-size: 14px;
 }
 
-.command-log-label {
-  display: block;
-  margin-top: 16px;
-  color: #70877d;
-  font-size: 12px;
-}
-
 .command-log {
   display: block;
   width: 100%;
